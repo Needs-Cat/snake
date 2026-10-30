@@ -19,7 +19,7 @@ public abstract partial class ASingleton<T>
 	[AutoStaticsCleanup]
 	private static T m_instance = null;
 	
-	private ASingleton()
+	protected ASingleton()
 	{
 		// Stub so it can't be called
 	}
