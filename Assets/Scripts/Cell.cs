@@ -5,5 +5,5 @@ using UnityEngine;
 /// </summary>
 public class Cell : MonoBehaviour
 {
-	
+	public Occupant Occupant { get; set; } = Occupant.Empty;
 }
