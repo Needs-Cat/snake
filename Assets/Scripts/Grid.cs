@@ -18,14 +18,72 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		BuildGrid();
 	}
 
-	public void AddOccupant(Vector2Int coordinate, Occupant occupant)
+	public bool AddOccupant(Vector2Int coordinate, Occupant occupant)
 	{
-		AddOccupant(coordinate.x, coordinate.y, occupant);
+		return AddOccupant(coordinate.x, coordinate.y, occupant);
 	}
 	
-	public void AddOccupant(int x, int y, Occupant occupant)
+	public bool AddOccupant(int x, int y, Occupant occupant)
 	{
+		if (x >= m_grid.GetLength(0) ||
+			y >= m_grid.GetLength(1))
+		{
+			// Outside range of grid
+			return false;
+		}
+		
 		m_grid[x, y].AddOccupant(occupant);
+
+		return true;
+	}
+
+	public bool RemoveOccupant(Vector2Int coordinate, Occupant occupant)
+	{
+		return RemoveOccupant(coordinate.x, coordinate.y, occupant);
+	}
+
+	public bool RemoveOccupant(int x, int y, Occupant occupant)
+	{
+		if (x >= m_grid.GetLength(0) ||
+			y >= m_grid.GetLength(1))
+		{
+			// Outside range of grid
+			return false;
+		}
+
+		if (!m_grid[x, y].Occupant.HasFlag(occupant))
+		{
+			return false;
+		}
+
+		m_grid[x, y].RemoveOccupant(occupant);
+
+		return true;
+	}
+
+	public bool MoveOccupant(Vector2Int originalCoordinate, Vector2Int newCoordinate, Occupant occupant)
+	{
+		return MoveOccupant(originalCoordinate.x, originalCoordinate.y, newCoordinate.x, newCoordinate.y, occupant);
+	}
+
+	public bool MoveOccupant(int originalX, int originalY, int newX, int newY, Occupant occupant)
+	{
+		// Start by trying to remove the current occupant
+		if (!RemoveOccupant(originalX, originalY, occupant))
+		{
+			return false;
+		}
+		
+		// Now try to add the new occupant
+		if (!AddOccupant(newX, newY, occupant))
+		{
+			// Add the original occupant back - so the state is the same as before the method call
+			AddOccupant(originalX, originalY, occupant);
+			
+			return false;
+		}
+
+		return true;
 	}
 
 	public Vector2Int GetCentre()

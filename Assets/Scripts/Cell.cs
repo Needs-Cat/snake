@@ -28,6 +28,13 @@ public class Cell : MonoBehaviour
 
 		Refresh();
 	}
+
+	public void RemoveOccupant(Occupant occupant)
+	{
+		Occupant &= ~occupant;
+
+		Refresh();
+	}
 	
 #if UNITY_EDITOR
 	
