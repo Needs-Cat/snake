@@ -15,6 +15,10 @@ public class Database : ScriptableObject
 	[SerializeField]
 	private int m_defaultPlayerLength = 3;
 
+	public float TickFrequency => m_tickFrequency;
+	[SerializeField]
+	private float m_tickFrequency = 1.0f;
+
 	[SerializeField]
 	private List<Occupant> m_occupantDisplayPriority = new();
 	

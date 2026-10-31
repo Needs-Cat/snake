@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Database
   m_gridSize: {x: 15, y: 21}
   m_defaultPlayerLength: 3
+  m_tickFrequency: 1
   m_occupantDisplayPriority: 02000000040000000100000000000000
   m_cellColours:
     m_keys: 00000000020000000400000001000000
