@@ -18,6 +18,26 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		BuildGrid();
 	}
 
+	public void AddOccupant(Vector2Int coordinate, Occupant occupant)
+	{
+		AddOccupant(coordinate.x, coordinate.y, occupant);
+	}
+	
+	public void AddOccupant(int x, int y, Occupant occupant)
+	{
+		m_grid[x, y].AddOccupant(occupant);
+	}
+
+	public Vector2Int GetCentre()
+	{
+		int width = m_grid.GetLength(0);
+		int height = m_grid.GetLength(1);
+
+		return new(
+			Mathf.RoundToInt(width * 0.5f),
+			Mathf.RoundToInt(height * 0.5f));
+	}
+
 	private void BuildGrid()
 	{
 		// Destroy any existing cells

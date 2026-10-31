@@ -13,3 +13,12 @@ MonoBehaviour:
   m_Name: Database
   m_EditorClassIdentifier: Assembly-CSharp::Database
   m_gridSize: {x: 15, y: 21}
+  m_defaultPlayerLength: 3
+  m_occupantDisplayPriority: 02000000040000000100000000000000
+  m_cellColours:
+    m_keys: 00000000020000000400000001000000
+    m_values:
+    - {r: 1, g: 1, b: 1, a: 1}
+    - {r: 0, g: 1, b: 0, a: 1}
+    - {r: 0, g: 0.79607844, b: 0, a: 1}
+    - {r: 1, g: 0, b: 0, a: 1}

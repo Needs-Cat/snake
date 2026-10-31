@@ -20,5 +20,9 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	private void Initialise()
 	{
 		Grid.Instance.Initialise();
+		
+		// Create the player
+		Vector2Int cellPos = Grid.Instance.GetCentre();
+		Grid.Instance.AddOccupant(cellPos, Occupant.Head);
 	}
 }
