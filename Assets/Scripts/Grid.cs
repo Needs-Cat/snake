@@ -31,11 +31,12 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 
 		m_gridLayoutGroup.constraintCount = width;
 
-		for (int x = 0; x < width; x++)
+		for (int y = 0; y < height; y++)
 		{
-			for (int y = 0; y < height; y++)
+			for (int x = 0; x < width; x++)
 			{
 				m_grid[x, y] = Instantiate(m_cellPrefab, transform);
+				m_grid[x, y].Initialise(x, y);
 			}
 		}
 	}
