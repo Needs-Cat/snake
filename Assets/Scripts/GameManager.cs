@@ -7,7 +7,8 @@ using UnityEngine;
 /// </summary>
 public class GameManager : AMonoBehaviourSingleton<GameManager>
 {
-	public Database Database => m_database;
+	public static Database Database => Instance.m_database;
+	
 	[SerializeField]
 	private Database m_database = null;
 

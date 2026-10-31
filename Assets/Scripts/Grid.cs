@@ -24,7 +24,7 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		ClearCells();
 		
 		// Create the new cells
-		Database db = GameManager.Instance.Database;
+		Database db = GameManager.Database;
 		m_grid = new Cell[db.GridSize.x, db.GridSize.y];
 		int width = m_grid.GetLength(0);
 		int height = m_grid.GetLength(1);
