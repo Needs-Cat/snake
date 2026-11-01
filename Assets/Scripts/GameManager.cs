@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Game Runner
@@ -108,8 +109,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 			if (!MovePlayer())
 			{
 				// Game over!
-				// TODO
-				Debug.Log("Game Over");
+				DoGameOver();
 				yield break;
 			}
 			
@@ -119,6 +119,14 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 			// Update the tick timer after collecting fruit - so we get the latest balancing
 			tick = Database.GetTickFrequency(m_score);
 		}
+	}
+	
+	private void DoGameOver()
+	{
+		// Cache score for next scene
+		PlayerPrefs.SetInt(PlayerPrefKeys.SCORE, m_score);
+
+		SceneManager.LoadScene(SceneNames.RESULTS);
 	}
 
 	private bool MovePlayer()
