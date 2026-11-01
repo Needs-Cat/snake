@@ -25,6 +25,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	
 	private Vector2Int m_moveDirection = Vector2Int.up;
 	private Vector2Int m_prevMoveDirection = Vector2Int.up;
+	private Vector2Int m_prevTailCoords = Vector2Int.zero;
 
 	private void Start()
 	{
@@ -40,6 +41,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		// Create the player
 		m_snakeCoords.Clear();
 		
+		// Create the head
 		Vector2Int cellPos = Grid.Instance.GetCentre();
 		Grid.Instance.AddOccupant(cellPos, Occupant.Head);
 		m_snakeCoords.Add(cellPos);
@@ -126,8 +128,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		}
 		
 		// Move the tail tip up to the front to mimic the tail moving
-		Vector2Int prevTailTipCoords = PopTail();
-		if (!Grid.Instance.MoveOccupant(prevTailTipCoords, prevHeadCoords, Occupant.Tail))
+		m_prevTailCoords = PopTail();
+		if (!Grid.Instance.MoveOccupant(m_prevTailCoords, prevHeadCoords, Occupant.Tail))
 		{
 			// If the head move was successful - the tail should always succeed
 			Debug.LogError($"Failed to move tail from {TailTipCoords} to {prevHeadCoords}");
@@ -148,12 +150,26 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		
 		// Collect the fruit!
 		Grid.Instance.RemoveOccupant(HeadCoords, Occupant.Fruit);
+
+		// Grow tail
+		PushTail();
 		
-		// TODO: Grow tail
 		// TODO: Increase speed
 		// TODO: Gain points
 
 		SpawnFruit();
+	}
+
+	private void PushTail()
+	{
+		// Spawn the tail just behind the last one
+		if (!Grid.Instance.AddOccupant(m_prevTailCoords, Occupant.Tail))
+		{
+			Debug.LogError($"Failed to spawn tail at {m_prevTailCoords}");
+			return;
+		}
+
+		m_snakeCoords.Add(m_prevTailCoords);
 	}
 
 	private Vector2Int PopTail()
