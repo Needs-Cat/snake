@@ -27,7 +27,9 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	
 	public bool AddOccupant(int x, int y, Occupant occupant)
 	{
-		if (x >= m_grid.GetLength(0) ||
+		if (x < 0 ||
+			y < 0 ||
+			x >= m_grid.GetLength(0) ||
 			y >= m_grid.GetLength(1))
 		{
 			// Outside range of grid
@@ -52,7 +54,9 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 
 	public bool RemoveOccupant(int x, int y, Occupant occupant)
 	{
-		if (x >= m_grid.GetLength(0) ||
+		if (x < 0 ||
+			y < 0 ||
+			x >= m_grid.GetLength(0) ||
 			y >= m_grid.GetLength(1))
 		{
 			// Outside range of grid
@@ -108,7 +112,9 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	
 	public bool ContainsOccupant(int x, int y, Occupant occupant)
 	{
-		if (x >= m_grid.GetLength(0) ||
+		if (x < 0 ||
+			y < 0 ||
+			x >= m_grid.GetLength(0) ||
 			y >= m_grid.GetLength(1))
 		{
 			// Outside range of grid
