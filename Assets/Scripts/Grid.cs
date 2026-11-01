@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,7 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	private Cell m_cellPrefab = null;
 	
 	private Cell[,] m_grid = null;
+	private List<Vector2Int> m_emptyCells = new();
 	
 	public void Initialise()
 	{
@@ -33,6 +35,12 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		}
 		
 		m_grid[x, y].AddOccupant(occupant);
+
+		// Remove cell from cache as it's no longer empty
+		if (m_grid[x, y].Occupant != Occupant.Empty)
+		{
+			m_emptyCells.Remove(new Vector2Int(x, y));
+		}
 
 		return true;
 	}
@@ -57,6 +65,13 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		}
 
 		m_grid[x, y].RemoveOccupant(occupant);
+
+		// Add cell back to cache if it is now empty
+		Vector2Int coords = new(x, y);
+		if (m_grid[x, y].Occupant == Occupant.Empty && !m_emptyCells.Contains(coords))
+		{
+			m_emptyCells.Add(coords);
+		}
 
 		return true;
 	}
@@ -86,6 +101,23 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		return true;
 	}
 
+	public bool ContainsOccupant(Vector2Int coordinate, Occupant occupant)
+	{
+		return ContainsOccupant(coordinate.x, coordinate.y, occupant);
+	}
+	
+	public bool ContainsOccupant(int x, int y, Occupant occupant)
+	{
+		if (x >= m_grid.GetLength(0) ||
+			y >= m_grid.GetLength(1))
+		{
+			// Outside range of grid
+			return false;
+		}
+
+		return m_grid[x, y].Occupant.HasFlag(occupant);
+	}
+
 	public Vector2Int GetCentre()
 	{
 		int width = m_grid.GetLength(0);
@@ -94,6 +126,12 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		return new(
 			Mathf.RoundToInt(width * 0.5f),
 			Mathf.RoundToInt(height * 0.5f));
+	}
+
+	public Vector2Int GetRandomEmptyCell()
+	{
+		int randomIndex = Random.Range(0, m_emptyCells.Count);
+		return m_emptyCells[randomIndex];
 	}
 
 	private void BuildGrid()
@@ -115,6 +153,8 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 			{
 				m_grid[x, y] = Instantiate(m_cellPrefab, transform);
 				m_grid[x, y].Initialise(x, y);
+
+				m_emptyCells.Add(new Vector2Int(x, y));
 			}
 		}
 	}
@@ -139,5 +179,6 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 		}
 
 		m_grid = null;
+		m_emptyCells.Clear();
 	}
 }

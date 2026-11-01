@@ -52,6 +52,9 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 			Grid.Instance.AddOccupant(cellPos, Occupant.Tail);
 			m_snakeCoords.Add(cellPos);
 		}
+		
+		// Spawn the first fruit
+		SpawnFruit();
 	}
 
 	public void SetMoveDirection(Vector2 swipeDirection)
@@ -105,6 +108,9 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 				Debug.Log("Game Over");
 				yield break;
 			}
+			
+			// Try to collect, and respawn, fruit
+			TryCollectFruit();
 		}
 	}
 
@@ -130,6 +136,23 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		return true;
 	}
 
+	private void TryCollectFruit()
+	{
+		if (!Grid.Instance.ContainsOccupant(HeadCoords, Occupant.Fruit))
+		{
+			return;
+		}
+		
+		// Collect the fruit!
+		Grid.Instance.RemoveOccupant(HeadCoords, Occupant.Fruit);
+		
+		// TODO: Grow tail
+		// TODO: Increase speed
+		// TODO: Gain points
+
+		SpawnFruit();
+	}
+
 	private Vector2Int PopTail()
 	{
 		Vector2Int coords = m_snakeCoords[^1];
@@ -137,5 +160,12 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		m_snakeCoords.RemoveAt(m_snakeCoords.Count - 1);
 
 		return coords;
+	}
+
+	private void SpawnFruit()
+	{
+		Vector2Int coords = Grid.Instance.GetRandomEmptyCell();
+
+		Grid.Instance.AddOccupant(coords, Occupant.Fruit);
 	}
 }
