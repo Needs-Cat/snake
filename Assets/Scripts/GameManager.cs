@@ -63,13 +63,13 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		
 		if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
 		{
-			// Horizontal
-			moveDirection.x = Mathf.CeilToInt(swipeDirection.x);
+			// Horizontal - Don't round to 0!
+			moveDirection.x = (swipeDirection.x > 0.0f) ? Mathf.CeilToInt(swipeDirection.x) : Mathf.FloorToInt(swipeDirection.x);
 		}
 		else
 		{
-			// Vertical
-			moveDirection.y = Mathf.CeilToInt(swipeDirection.y);
+			// Vertical - Don't round to 0!
+			moveDirection.y = (swipeDirection.y > 0.0f) ? Mathf.CeilToInt(swipeDirection.y) : Mathf.FloorToInt(swipeDirection.y);
 		}
 		
 		// Don't allow the snake to move back into itself
