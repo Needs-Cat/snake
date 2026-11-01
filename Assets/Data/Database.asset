@@ -23,5 +23,5 @@ MonoBehaviour:
     - {r: 0, g: 0.79607844, b: 0, a: 1}
     - {r: 1, g: 0, b: 0, a: 1}
   m_baseTickFrequency: 0.8
-  m_minTickFrequency: 0.1
+  m_minTickFrequency: 0.2
   m_tickFreqPerScoreModifier: 0.1
