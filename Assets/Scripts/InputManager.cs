@@ -24,6 +24,17 @@ public class InputManager : MonoBehaviour
 
 	private void Update()
 	{
+		if (!GameManager.Exists)
+		{
+			return;
+		}
+
+		// Don't take in gameplay-related input while paused
+		if (GameManager.Instance.IsPaused)
+		{
+			return;
+		}
+		
 		KeyboardSwipe();
 	}
 
@@ -63,6 +74,17 @@ public class InputManager : MonoBehaviour
 	
 	public void PressCallback(InputAction.CallbackContext context)
 	{
+		if (!GameManager.Exists)
+		{
+			return;
+		}
+		
+		// Don't take in gameplay-related input while paused
+		if (GameManager.Instance.IsPaused)
+		{
+			return;
+		}
+		
 		TouchState state = context.ReadValue<TouchState>();
 		
 		if (state.phase == TouchPhase.Began)

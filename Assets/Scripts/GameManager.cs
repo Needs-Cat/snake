@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -11,16 +12,16 @@ using UnityEngine.SceneManagement;
 public class GameManager : AMonoBehaviourSingleton<GameManager>
 {
 	public static Database Database => Instance.m_database;
+	public bool IsPaused => m_isPaused;
 
-	private Vector2Int HeadCoords
-	{
-		get => m_snakeCoords[0];
-		set => m_snakeCoords[0] = value;
-	}
+	private Vector2Int HeadCoords => m_snakeCoords[0];
 	private Vector2Int TailTipCoords => m_snakeCoords[^1];
 	
 	[SerializeField]
 	private Database m_database = null;
+
+	[SerializeField]
+	private UnityEvent<bool> m_onPaused = new();
 
 	private List<Vector2Int> m_snakeCoords = new();
 	
@@ -28,6 +29,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	private Vector2Int m_prevMoveDirection = Vector2Int.up;
 	private Vector2Int m_prevTailCoords = Vector2Int.zero;
 
+	private bool m_isPaused = false;
+	
 	private int m_score = 0;
 
 	private void Start()
@@ -61,6 +64,9 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		
 		// Spawn the first fruit
 		SpawnFruit();
+
+		// Ensure the game is properly un-paused
+		PauseGame(false);
 	}
 
 	public void SetMoveDirection(Vector2 swipeDirection)
@@ -91,6 +97,13 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		m_moveDirection = moveDirection;
 	}
 
+	public void PauseGame(bool paused)
+	{
+		m_isPaused = paused;
+
+		m_onPaused.Invoke(m_isPaused);
+	}
+
 	private IEnumerator DoGameLoop()
 	{
 		float tick = Database.GetTickFrequency(m_score);
@@ -103,6 +116,12 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 				yield return null;
 
 				tick -= Time.deltaTime;
+
+				// Stop the game loop while we're paused
+				while (m_isPaused)
+				{
+					yield return null;
+				}
 			}
 			
 			// Move the player
