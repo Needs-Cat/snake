@@ -24,6 +24,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	private List<Vector2Int> m_snakeCoords = new();
 	
 	private Vector2Int m_moveDirection = Vector2Int.up;
+	private Vector2Int m_prevMoveDirection = Vector2Int.up;
 
 	private void Start()
 	{
@@ -76,7 +77,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		}
 		
 		// Don't allow the snake to move back into itself
-		Vector2Int backwardsMoveDirection = m_moveDirection * -1;
+		Vector2Int backwardsMoveDirection = m_prevMoveDirection * -1;
 		if (moveDirection == backwardsMoveDirection)
 		{
 			return;
@@ -133,6 +134,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 			return false;
 		}
 
+		m_prevMoveDirection = m_moveDirection;
+		
 		return true;
 	}
 
