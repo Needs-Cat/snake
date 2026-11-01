@@ -27,6 +27,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	private Vector2Int m_prevMoveDirection = Vector2Int.up;
 	private Vector2Int m_prevTailCoords = Vector2Int.zero;
 
+	private int m_score = 0;
+
 	private void Start()
 	{
 		Initialise();
@@ -90,7 +92,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 
 	private IEnumerator DoGameLoop()
 	{
-		float tick = Database.TickFrequency;
+		float tick = Database.GetTickFrequency(m_score);
 
 		while (true)
 		{
@@ -101,7 +103,6 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 
 				tick -= Time.deltaTime;
 			}
-			tick = Database.TickFrequency;
 			
 			// Move the player
 			if (!MovePlayer())
@@ -114,6 +115,9 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 			
 			// Try to collect, and respawn, fruit
 			TryCollectFruit();
+			
+			// Update the tick timer after collecting fruit - so we get the latest balancing
+			tick = Database.GetTickFrequency(m_score);
 		}
 	}
 
@@ -154,8 +158,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		// Grow tail
 		PushTail();
 		
-		// TODO: Increase speed
-		// TODO: Gain points
+		// Increase score - this will also increase tick rate
+		m_score++;
 
 		SpawnFruit();
 	}

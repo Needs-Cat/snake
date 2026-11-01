@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 453fef71da70ebe48a62a06145a5afaa, type: 3}
   m_Name: Database
   m_EditorClassIdentifier: Assembly-CSharp::Database
-  m_gridSize: {x: 15, y: 21}
   m_defaultPlayerLength: 3
-  m_tickFrequency: 1
+  m_gridSize: {x: 15, y: 21}
   m_occupantDisplayPriority: 02000000040000000100000000000000
   m_cellColours:
     m_keys: 00000000020000000400000001000000
@@ -23,3 +22,6 @@ MonoBehaviour:
     - {r: 0, g: 1, b: 0, a: 1}
     - {r: 0, g: 0.79607844, b: 0, a: 1}
     - {r: 1, g: 0, b: 0, a: 1}
+  m_baseTickFrequency: 0.8
+  m_minTickFrequency: 0.1
+  m_tickFreqPerScoreModifier: 0.1
