@@ -123,6 +123,18 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	
 	private void DoGameOver()
 	{
+		// Compare and cache high score
+		int highScore = PlayerPrefs.GetInt(PlayerPrefKeys.HIGH_SCORE, 0);
+		if (m_score > highScore)
+		{
+			PlayerPrefs.SetInt(PlayerPrefKeys.HIGH_SCORE, m_score);
+			PlayerPrefs.SetInt(PlayerPrefKeys.NEW_HIGH_SCORE, 1);
+		}
+		else
+		{
+			PlayerPrefs.SetInt(PlayerPrefKeys.NEW_HIGH_SCORE, 0);
+		}
+		
 		// Cache score for next scene
 		PlayerPrefs.SetInt(PlayerPrefKeys.SCORE, m_score);
 
