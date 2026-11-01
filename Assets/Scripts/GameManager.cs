@@ -54,6 +54,34 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		}
 	}
 
+	public void SetMoveDirection(Vector2 swipeDirection)
+	{
+		// Set to normalised cardinal
+		swipeDirection.Normalize();
+
+		Vector2Int moveDirection = Vector2Int.zero;
+		
+		if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
+		{
+			// Horizontal
+			moveDirection.x = Mathf.CeilToInt(swipeDirection.x);
+		}
+		else
+		{
+			// Vertical
+			moveDirection.y = Mathf.CeilToInt(swipeDirection.y);
+		}
+		
+		// Don't allow the snake to move back into itself
+		Vector2Int backwardsMoveDirection = m_moveDirection * -1;
+		if (moveDirection == backwardsMoveDirection)
+		{
+			return;
+		}
+
+		m_moveDirection = moveDirection;
+	}
+
 	private IEnumerator DoGameLoop()
 	{
 		float tick = Database.TickFrequency;
