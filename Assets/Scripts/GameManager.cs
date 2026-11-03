@@ -165,8 +165,16 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		// Start with the head - as this will determine if it's successful
 		Vector2Int prevHeadCoords = HeadCoords;
 		m_snakeCoords.Insert(0, prevHeadCoords + m_moveDirection);  // Add the head to the front
+
+		if (Grid.Instance.ContainsOccupant(HeadCoords, Occupant.Tail))
+		{
+			// Player bumped into itself
+			return false;
+		}
+		
 		if (!Grid.Instance.MoveOccupant(prevHeadCoords, HeadCoords, Occupant.Head))
 		{
+			// Player moved off grid
 			return false;
 		}
 		
