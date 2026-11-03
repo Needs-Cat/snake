@@ -130,6 +130,10 @@ public class InputManager : MonoBehaviour
 			float halfWidth = Screen.width * 0.5f;
 			float halfHeight = Screen.height * 0.5f;
 			position -= new Vector2(halfWidth, halfHeight);
+			
+			// Raise the tap position so you don't need to stretch your thumb to the top of the screen
+			float quarterHeight = halfHeight * 0.5f;
+			position.y += quarterHeight;
 
 			Vector2Int moveDirection = ToMoveDirection(position);
 
