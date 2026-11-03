@@ -146,9 +146,18 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 
 	private bool MovePlayer()
 	{
-		// Start with the head - as this will determine if it's successful
+		// Move the tail-tip first so the snake can't bump into it
+		m_prevTailCoords = PopTail();
+		if (!Grid.Instance.MoveOccupant(m_prevTailCoords, HeadCoords, Occupant.Tail))
+		{
+			// The tail should never fail to move because the head is already in a valid spot
+			Debug.LogError($"Failed to move tail from {m_prevTailCoords} to {HeadCoords}");
+			return false;
+		}
+		
+		// Now move the head and check if we've bumped into anything
 		Vector2Int prevHeadCoords = HeadCoords;
-		m_snakeCoords.Insert(0, prevHeadCoords + m_moveDirection);  // Add the head to the front
+		m_snakeCoords.Insert(0, HeadCoords + m_moveDirection);  // Add the head to the front
 
 		if (Grid.Instance.ContainsOccupant(HeadCoords, Occupant.Tail))
 		{
@@ -159,15 +168,6 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		if (!Grid.Instance.MoveOccupant(prevHeadCoords, HeadCoords, Occupant.Head))
 		{
 			// Player moved off grid
-			return false;
-		}
-		
-		// Move the tail tip up to the front to mimic the tail moving
-		m_prevTailCoords = PopTail();
-		if (!Grid.Instance.MoveOccupant(m_prevTailCoords, prevHeadCoords, Occupant.Tail))
-		{
-			// If the head move was successful - the tail should always succeed
-			Debug.LogError($"Failed to move tail from {TailTipCoords} to {prevHeadCoords}");
 			return false;
 		}
 
