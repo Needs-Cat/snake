@@ -69,24 +69,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		PauseGame(false);
 	}
 
-	public void SetMoveDirection(Vector2 swipeDirection)
+	public void SetMoveDirection(Vector2Int moveDirection)
 	{
-		// Set to normalised cardinal
-		swipeDirection.Normalize();
-
-		Vector2Int moveDirection = Vector2Int.zero;
-		
-		if (Mathf.Abs(swipeDirection.x) > Mathf.Abs(swipeDirection.y))
-		{
-			// Horizontal - Don't round to 0!
-			moveDirection.x = (swipeDirection.x > 0.0f) ? Mathf.CeilToInt(swipeDirection.x) : Mathf.FloorToInt(swipeDirection.x);
-		}
-		else
-		{
-			// Vertical - Don't round to 0!
-			moveDirection.y = (swipeDirection.y > 0.0f) ? Mathf.CeilToInt(swipeDirection.y) : Mathf.FloorToInt(swipeDirection.y);
-		}
-		
 		// Don't allow the snake to move back into itself
 		Vector2Int backwardsMoveDirection = m_prevMoveDirection * -1;
 		if (moveDirection == backwardsMoveDirection)

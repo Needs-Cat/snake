@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.LowLevel;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
@@ -15,7 +16,7 @@ public class InputManager : MonoBehaviour
 	
 	[Header("Events")]
 	[SerializeField]
-	private UnityEvent<Vector2> m_onSwipeRegistered = new();
+	private UnityEvent<Vector2Int> m_onMovementDirectionChanged = new();
 	
 	private Vector2 m_touchStartPos = Vector2.zero;
 	private float m_touchStartTime = 0.0f;
@@ -66,7 +67,7 @@ public class InputManager : MonoBehaviour
 
 		if (swipe != Vector2Int.zero)
 		{
-			m_onSwipeRegistered.Invoke(swipe);
+			m_onMovementDirectionChanged.Invoke(swipe);
 		}
 	}
 
@@ -113,7 +114,47 @@ public class InputManager : MonoBehaviour
 				return;
 			}
 
-			m_onSwipeRegistered.Invoke(direction);
+			// Set to normalised cardinal
+			Vector2Int moveDirection = ToMoveDirection(direction);
+			
+			m_onMovementDirectionChanged.Invoke(moveDirection);
 		}
+	}
+
+	public void TapCallback(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+		{
+			Vector2 position = context.ReadValue<Vector2>();
+
+			// Adjust the position so (0, 0) is in the centre of the screen
+			float halfWidth = Screen.width * 0.5f;
+			float halfHeight = Screen.height * 0.5f;
+			position -= new Vector2(halfWidth, halfHeight);
+
+			Vector2Int moveDirection = ToMoveDirection(position);
+
+			m_onMovementDirectionChanged.Invoke(moveDirection);
+		}
+	}
+
+	private Vector2Int ToMoveDirection(Vector2 direction)
+	{
+		// Normalise and round to cardinals
+		direction.Normalize();
+
+		Vector2Int moveDirection = Vector2Int.zero;
+		if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+		{
+			// Horizontal - Don't round to 0!
+			moveDirection.x = (direction.x > 0.0f) ? Mathf.CeilToInt(direction.x) : Mathf.FloorToInt(direction.x);
+		}
+		else
+		{
+			// Vertical - Don't round to 0!
+			moveDirection.y = (direction.y > 0.0f) ? Mathf.CeilToInt(direction.y) : Mathf.FloorToInt(direction.y);
+		}
+
+		return moveDirection;
 	}
 }
