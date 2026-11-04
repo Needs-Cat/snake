@@ -14,6 +14,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	public static Database Database => Instance.m_database;
 	public bool IsPaused => m_isPaused;
 
+	public System.Action<Vector2Int> OnMoveDirectionChanged { get; set; } = delegate { };
+
 	private Vector2Int HeadCoords => m_snakeCoords[0];
 	private Vector2Int TailTipCoords => m_snakeCoords[^1];
 	
@@ -69,7 +71,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		PauseGame(false);
 	}
 
-	public void SetMoveDirection(Vector2Int moveDirection)
+	public void TryChangeMoveDirection(Vector2Int moveDirection)
 	{
 		// Don't allow the snake to move back into itself
 		Vector2Int backwardsMoveDirection = m_prevMoveDirection * -1;
@@ -79,6 +81,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		}
 
 		m_moveDirection = moveDirection;
+
+		OnMoveDirectionChanged(m_moveDirection);
 	}
 
 	public void PauseGame(bool paused)

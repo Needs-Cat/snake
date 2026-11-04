@@ -7,6 +7,9 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public class InputManager : MonoBehaviour
 {
+	[SerializeField]
+	private PlayerInput m_playerInput = null;
+	
 	[Header("Settings")]
 	[SerializeField]
 	private float m_maxSwipeTime = 0.25f;
@@ -15,10 +18,20 @@ public class InputManager : MonoBehaviour
 	
 	[Header("Events")]
 	[SerializeField]
-	private UnityEvent<Vector2Int> m_onMovementDirectionChanged = new();
+	private UnityEvent<Vector2Int> m_onMoveDirectionInput = new();
 	
 	private Vector2 m_touchStartPos = Vector2.zero;
 	private float m_touchStartTime = 0.0f;
+
+	private void Awake()
+	{
+		m_playerInput.onActionTriggered += ActionTriggered;
+	}
+
+	private void OnDestroy()
+	{
+		m_playerInput.onActionTriggered -= ActionTriggered;
+	}
 
 #if UNITY_EDITOR
 
@@ -66,13 +79,27 @@ public class InputManager : MonoBehaviour
 
 		if (swipe != Vector2Int.zero)
 		{
-			m_onMovementDirectionChanged.Invoke(swipe);
+			m_onMoveDirectionInput.Invoke(swipe);
 		}
 	}
 
 #endif
+
+	private void ActionTriggered(InputAction.CallbackContext context)
+	{
+		switch (context.action.name)
+		{
+			case "PrimaryTouch":
+				TouchCallback(context);
+				break;
+			
+			case "Tap":
+				TapCallback(context);
+				break;
+		}
+	}
 	
-	public void PressCallback(InputAction.CallbackContext context)
+	private void TouchCallback(InputAction.CallbackContext context)
 	{
 		if (!GameManager.Exists)
 		{
@@ -116,11 +143,11 @@ public class InputManager : MonoBehaviour
 			// Set to normalised cardinal
 			Vector2Int moveDirection = ToMoveDirection(direction);
 			
-			m_onMovementDirectionChanged.Invoke(moveDirection);
+			m_onMoveDirectionInput.Invoke(moveDirection);
 		}
 	}
 
-	public void TapCallback(InputAction.CallbackContext context)
+	private void TapCallback(InputAction.CallbackContext context)
 	{
 		if (context.performed)
 		{
@@ -137,7 +164,7 @@ public class InputManager : MonoBehaviour
 
 			Vector2Int moveDirection = ToMoveDirection(position);
 
-			m_onMovementDirectionChanged.Invoke(moveDirection);
+			m_onMoveDirectionInput.Invoke(moveDirection);
 		}
 	}
 
