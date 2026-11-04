@@ -15,6 +15,7 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 	public bool IsPaused => m_isPaused;
 
 	public System.Action<Vector2Int> OnMoveDirectionChanged { get; set; } = delegate { };
+	public System.Action<Vector2Int> OnHeadCellChanged { get; set; } = delegate { };
 
 	private Vector2Int HeadCoords => m_snakeCoords[0];
 	private Vector2Int TailTipCoords => m_snakeCoords[^1];
@@ -67,6 +68,12 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		// Spawn the first fruit
 		SpawnFruit();
 
+		SnakeFace.Instance.Initialise();
+		
+		// Ensure any visuals relating to the player have the correct information
+		OnHeadCellChanged(HeadCoords);
+		OnMoveDirectionChanged(m_moveDirection);
+		
 		// Ensure the game is properly un-paused
 		PauseGame(false);
 	}
@@ -176,6 +183,8 @@ public class GameManager : AMonoBehaviourSingleton<GameManager>
 		}
 
 		m_prevMoveDirection = m_moveDirection;
+
+		OnHeadCellChanged(HeadCoords);
 		
 		return true;
 	}

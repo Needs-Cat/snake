@@ -18,6 +18,9 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	public void Initialise()
 	{
 		BuildGrid();
+		
+		// Force GridLayout to set position for cells
+		LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform) m_gridLayoutGroup.transform);
 	}
 
 	public bool AddOccupant(Vector2Int coordinate, Occupant occupant)
@@ -27,12 +30,8 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	
 	public bool AddOccupant(int x, int y, Occupant occupant)
 	{
-		if (x < 0 ||
-			y < 0 ||
-			x >= m_grid.GetLength(0) ||
-			y >= m_grid.GetLength(1))
+		if (!IsWithinBounds(x, y))
 		{
-			// Outside range of grid
 			return false;
 		}
 		
@@ -54,12 +53,8 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 
 	public bool RemoveOccupant(int x, int y, Occupant occupant)
 	{
-		if (x < 0 ||
-			y < 0 ||
-			x >= m_grid.GetLength(0) ||
-			y >= m_grid.GetLength(1))
+		if (!IsWithinBounds(x, y))
 		{
-			// Outside range of grid
 			return false;
 		}
 
@@ -112,12 +107,8 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	
 	public bool ContainsOccupant(int x, int y, Occupant occupant)
 	{
-		if (x < 0 ||
-			y < 0 ||
-			x >= m_grid.GetLength(0) ||
-			y >= m_grid.GetLength(1))
+		if (!IsWithinBounds(x, y))
 		{
-			// Outside range of grid
 			return false;
 		}
 
@@ -138,6 +129,16 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 	{
 		int randomIndex = Random.Range(0, m_emptyCells.Count);
 		return m_emptyCells[randomIndex];
+	}
+
+	public Vector3 GetPositionForCell(Vector2Int cell)
+	{
+		if (!IsWithinBounds(cell))
+		{
+			return Vector3.zero;
+		}
+
+		return m_grid[cell.x, cell.y].transform.position;
 	}
 
 	private void BuildGrid()
@@ -186,5 +187,18 @@ public class Grid : AMonoBehaviourSingleton<Grid>
 
 		m_grid = null;
 		m_emptyCells.Clear();
+	}
+
+	private bool IsWithinBounds(Vector2Int coordinate)
+	{
+		return IsWithinBounds(coordinate.x, coordinate.y);
+	}
+	
+	private bool IsWithinBounds(int x, int y)
+	{
+		return x >= 0 &&
+			y >= 0 &&
+			x < m_grid.GetLength(0) &&
+			y < m_grid.GetLength(1);
 	}
 }
